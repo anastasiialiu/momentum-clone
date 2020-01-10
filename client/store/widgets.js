@@ -3,6 +3,7 @@ import axios from 'axios'
 // action types
 const GOT_GEOLOCATION = 'GOT_GEOLOCATION'
 const GOT_WEATHER = 'GOT_WEATHER'
+const GOT_NASA_IMAGE = 'GOT_NASA_IMAGE'
 
 // action creator
 export const gotGeolocation = geolocation => ({
@@ -13,6 +14,11 @@ export const gotGeolocation = geolocation => ({
 export const gotWeather = weather => ({
   type: GOT_WEATHER,
   weather
+})
+
+export const gotNasaImage = image => ({
+  type: GOT_NASA_IMAGE,
+  image
 })
 
 export const getWeather = coordinates => {
@@ -29,9 +35,22 @@ export const getWeather = coordinates => {
   }
 }
 
+export const getNasaImage = () => {
+  return async dispatch => {
+    try {
+      const {data} = await axios.get('/api/widgets/nasa')
+      // console.log("data", data.url)
+      dispatch(gotNasaImage(data.url))
+    } catch (error) {
+      console.log(error)
+    }
+  }
+}
+
 const initialState = {
   geolocation: {},
-  weather: ''
+  weather: '',
+  backgroundImage: ''
 }
 
 const reducer = (state = initialState, action) => {
@@ -40,6 +59,8 @@ const reducer = (state = initialState, action) => {
       return {...state, geolocation: action.geolocation}
     case GOT_WEATHER:
       return {...state, weather: action.weather}
+    case GOT_NASA_IMAGE:
+      return {...state, backgroundImage: action.image}
     default:
       return state
   }

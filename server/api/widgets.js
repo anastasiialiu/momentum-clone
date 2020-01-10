@@ -21,3 +21,15 @@ router.use('/weather', async (req, res, next) => {
     next(err)
   }
 })
+
+router.use('/nasa', async (req, res, next) => {
+  try {
+    const api_key = process.env.NASA_API_KEY
+    const {data} = await axios.get(`https://api.nasa.gov/planetary/apod`, {
+      params: {api_key}
+    })
+    res.json(data)
+  } catch (error) {
+    next(error)
+  }
+})
